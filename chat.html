@@ -3,70 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HAYCHAT</title>
+<title>HAYAPP Chat</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
-
 body{
-background:#111b21;
-height:100vh;
+margin:0;
+font-family:Arial;
+background:#0b141a;
 display:flex;
 flex-direction:column;
+height:100vh;
 }
 
 .header{
-height:60px;
 background:#202c33;
-display:flex;
-align-items:center;
-padding:0 15px;
 color:white;
-}
-
-.avatar{
-width:42px;
-height:42px;
-border-radius:50%;
-background:#25D366;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-margin-right:12px;
-}
-
-.chat{
-flex:1;
-overflow:auto;
 padding:15px;
-background:#0b141a;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
-.msg-me{
+#chat{
+flex:1;
+padding:10px;
+overflow-y:auto;
+}
+
+.msg{
+padding:10px;
+margin:8px 0;
+border-radius:10px;
+max-width:70%;
+word-wrap:break-word;
+}
+
+.me{
 background:#005c4b;
 color:white;
-padding:10px;
-border-radius:10px;
-margin:8px 0;
 margin-left:auto;
-width:max-content;
-max-width:75%;
 }
 
-.msg-you{
+.other{
 background:#202c33;
 color:white;
-padding:10px;
-border-radius:10px;
-margin:8px 0;
-width:max-content;
-max-width:75%;
 }
 
 .bottom{
@@ -75,96 +55,117 @@ padding:10px;
 background:#202c33;
 }
 
-.bottom input{
+input{
 flex:1;
 padding:12px;
 border:none;
-border-radius:30px;
+border-radius:20px;
 background:#2a3942;
 color:white;
 }
 
-.bottom button{
+button{
 margin-left:10px;
 padding:12px 18px;
 border:none;
 border-radius:50%;
 background:#25D366;
-font-size:18px;
+color:white;
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="header">
-
-<div class="avatar" id="avatar"></div>
-
 <div>
-<b id="nama"></b><br>
-<small>Online</small>
+<b id="nama"></b>
+</div>
+<button onclick="logout()">Logout</button>
 </div>
 
-</div>
-
-<div class="chat" id="chat">
-
-<div class="msg-you">
-Halo 👋 Selamat datang di HAYAPP
-</div>
-
-</div>
+<div id="chat"></div>
 
 <div class="bottom">
-
 <input id="pesan" placeholder="Ketik pesan...">
-
 <button onclick="kirim()">➤</button>
-
 </div>
 
-<script>
+<script type="module">
+import { auth, db } from "./firebase.js";
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
-let nama=localStorage.getItem("nama")||"User";
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-document.getElementById("nama").innerHTML=nama;
+let userEmail = "";
 
-document.getElementById("avatar").innerHTML=nama.charAt(0).toUpperCase();
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    location.href = "index.html";
+  } else {
+    userEmail = user.email;
+    document.getElementById("nama").innerText = user.email;
+    loadChat();
+  }
+});
 
-function kirim(){
+// KIRIM PESAN
+window.kirim = async function () {
+  let pesan = document.getElementById("pesan").value;
+  if (!pesan) return;
 
-let pesan=document.getElementById("pesan");
+  await addDoc(collection(db, "chat"), {
+    text: pesan,
+    sender: userEmail,
+    time: Date.now()
+  });
 
-if(pesan.value=="") return;
+  document.getElementById("pesan").value = "";
+};
 
-let chat=document.getElementById("chat");
+// LOAD CHAT REALTIME
+function loadChat() {
+  const q = query(collection(db, "chat"), orderBy("time"));
 
-chat.innerHTML+=`
-<div class="msg-me">
-${pesan.value}
-</div>
-`;
+  onSnapshot(q, (snapshot) => {
+    let chat = document.getElementById("chat");
+    chat.innerHTML = "";
 
-setTimeout(()=>{
+    snapshot.forEach((doc) => {
+      let data = doc.data();
 
-chat.innerHTML+=`
-<div class="msg-you">
-Pesan diterima 👍
-</div>
-`;
+      let div = document.createElement("div");
+      div.classList.add("msg");
 
-chat.scrollTop=chat.scrollHeight;
+      if (data.sender === userEmail) {
+        div.classList.add("me");
+      } else {
+        div.classList.add("other");
+      }
 
-},600);
+      div.innerText = data.text;
+      chat.appendChild(div);
+    });
 
-pesan.value="";
-
-chat.scrollTop=chat.scrollHeight;
-
+    chat.scrollTop = chat.scrollHeight;
+  });
 }
 
+// LOGOUT
+window.logout = function () {
+  signOut(auth);
+};
 </script>
 
 </body>
-  </html>
+</html>
