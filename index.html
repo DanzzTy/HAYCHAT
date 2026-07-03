@@ -115,21 +115,35 @@ DAFTAR
 function login(){
 
 let email=document.getElementById("email").value;
-let pass=document.getElementById("password").value;
+let password=document.getElementById("password").value;
 
-if(email==""||pass==""){
+let simpanEmail=localStorage.getItem("email");
+let simpanPassword=localStorage.getItem("password");
+
+if(email==""||password==""){
 status.innerHTML="Lengkapi semua data!";
 return;
 }
 
-status.innerHTML="✔ Login berhasil (sementara)";
+if(email===simpanEmail && password===simpanPassword){
+
+status.innerHTML="Login berhasil...";
+
+setTimeout(()=>{
+location.href="chat.html";
+},1000);
+
+}else{
+
+status.innerHTML="Email atau Password salah!";
+
+}
+
 }
 
 function register(){
-
-status.innerHTML="Halaman daftar akan dibuat pada Bagian 2";
-
-}
+location.href="register.html";
+  }
 
 </script>
 
