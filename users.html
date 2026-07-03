@@ -41,61 +41,43 @@ background:#202c33;
 
 <script type="module">
 import { auth, db } from "./firebase.js";
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-import {
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
-
-let myEmail = "";
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) location.href = "index.html";
-  else {
-    myEmail = user.email;
-    loadUsers();
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    location.href = "index.html";
+    return;
   }
-});
 
-// AMBIL USER
-async function loadUsers() {
   const snap = await getDocs(collection(db, "users"));
-  let list = document.getElementById("list");
 
+  let list = document.getElementById("list");
   list.innerHTML = "";
 
-  let hasUser = false;
+  let count = 0;
 
   snap.forEach((docu) => {
     let data = docu.data();
+    count++;
 
     let div = document.createElement("div");
-    div.className = "user";
     div.innerText = data.nama || data.email;
 
     div.onclick = () => {
-      let room = createRoom(myEmail, data.email);
+      let room = [data.email, user.email].sort().join("_");
       localStorage.setItem("room", room);
-      localStorage.setItem("target", data.email);
       location.href = "chat.html";
     };
 
     list.appendChild(div);
-    hasUser = true;
   });
 
-  if (!hasUser) {
+  // kalau benar-benar kosong
+  if (count === 0) {
     list.innerHTML = "<div style='padding:15px;color:gray'>Belum ada user</div>";
   }
-  }
-
-// ROOM ID
-function createRoom(a, b) {
-  return a < b ? a + "_" + b : b + "_" + a;
-}
+});
 </script>
 
 </body>
