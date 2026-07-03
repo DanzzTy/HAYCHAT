@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HAYAPP</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b141a;
+}
+
+.header{
+background:#202c33;
+color:white;
+padding:15px;
+font-size:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.header button{
+background:#25D366;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+color:white;
+}
+
+.chat{
+height:calc(100vh - 60px);
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+font-size:22px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<span id="nama"></span>
+
+<button onclick="logout()">
+Logout
+</button>
+
+</div>
+
+<div class="chat">
+
+Selamat datang di HAYAPP 🎉
+
+</div>
+
+<script>
+
+document.getElementById("nama").innerHTML=
+localStorage.getItem("nama");
+
+function logout(){
+
+localStorage.clear();
+
+location.href="index.html";
+
+}
+
+</script>
+
+</body>
+</html>
