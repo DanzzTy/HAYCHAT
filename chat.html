@@ -3,77 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HAYAPP</title>
+<title>HAYCHAT</title>
 
 <style>
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:Arial;
-background:#0b141a;
+}
+
+body{
+background:#111b21;
+height:100vh;
+display:flex;
+flex-direction:column;
 }
 
 .header{
+height:60px;
 background:#202c33;
-color:white;
-padding:15px;
-font-size:20px;
 display:flex;
-justify-content:space-between;
 align-items:center;
+padding:0 15px;
+color:white;
 }
 
-.header button{
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
 background:#25D366;
-border:none;
-padding:8px 14px;
-border-radius:8px;
-color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+margin-right:12px;
 }
 
 .chat{
-height:calc(100vh - 60px);
-display:flex;
-justify-content:center;
-align-items:center;
+flex:1;
+overflow:auto;
+padding:15px;
+background:#0b141a;
+}
+
+.msg-me{
+background:#005c4b;
 color:white;
-font-size:22px;
+padding:10px;
+border-radius:10px;
+margin:8px 0;
+margin-left:auto;
+width:max-content;
+max-width:75%;
+}
+
+.msg-you{
+background:#202c33;
+color:white;
+padding:10px;
+border-radius:10px;
+margin:8px 0;
+width:max-content;
+max-width:75%;
+}
+
+.bottom{
+display:flex;
+padding:10px;
+background:#202c33;
+}
+
+.bottom input{
+flex:1;
+padding:12px;
+border:none;
+border-radius:30px;
+background:#2a3942;
+color:white;
+}
+
+.bottom button{
+margin-left:10px;
+padding:12px 18px;
+border:none;
+border-radius:50%;
+background:#25D366;
+font-size:18px;
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
 
-<span id="nama"></span>
+<div class="avatar" id="avatar"></div>
 
-<button onclick="logout()">
-Logout
-</button>
+<div>
+<b id="nama"></b><br>
+<small>Online</small>
+</div>
 
 </div>
 
-<div class="chat">
+<div class="chat" id="chat">
 
-Selamat datang di HAYAPP 🎉
+<div class="msg-you">
+Halo 👋 Selamat datang di HAYAPP
+</div>
+
+</div>
+
+<div class="bottom">
+
+<input id="pesan" placeholder="Ketik pesan...">
+
+<button onclick="kirim()">➤</button>
 
 </div>
 
 <script>
 
-document.getElementById("nama").innerHTML=
-localStorage.getItem("nama");
+let nama=localStorage.getItem("nama")||"User";
 
-function logout(){
+document.getElementById("nama").innerHTML=nama;
 
-localStorage.clear();
+document.getElementById("avatar").innerHTML=nama.charAt(0).toUpperCase();
 
-location.href="index.html";
+function kirim(){
+
+let pesan=document.getElementById("pesan");
+
+if(pesan.value=="") return;
+
+let chat=document.getElementById("chat");
+
+chat.innerHTML+=`
+<div class="msg-me">
+${pesan.value}
+</div>
+`;
+
+setTimeout(()=>{
+
+chat.innerHTML+=`
+<div class="msg-you">
+Pesan diterima 👍
+</div>
+`;
+
+chat.scrollTop=chat.scrollHeight;
+
+},600);
+
+pesan.value="";
+
+chat.scrollTop=chat.scrollHeight;
 
 }
 
 </script>
 
 </body>
-</html>
+  </html>
