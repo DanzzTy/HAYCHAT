@@ -68,10 +68,11 @@ async function loadUsers() {
   snap.forEach((docu) => {
     let data = docu.data();
 
-    if (data.email !== myEmail) {
+    
       let div = document.createElement("div");
       div.className = "user";
-      div.innerText = data.nama;
+      div.innerText = data.nama || 
+      data.email;
 
       div.onclick = () => {
         let room = createRoom(myEmail, data.email);
