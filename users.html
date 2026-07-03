@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HAYAPP - Users</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b141a;
+color:white;
+}
+
+.header{
+padding:15px;
+background:#202c33;
+font-size:18px;
+}
+
+.user{
+padding:15px;
+border-bottom:1px solid #2a3942;
+cursor:pointer;
+}
+
+.user:hover{
+background:#202c33;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+👥 Pilih Teman Chat
+</div>
+
+<div id="list"></div>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+let myEmail = "";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) location.href = "index.html";
+  else {
+    myEmail = user.email;
+    loadUsers();
+  }
+});
+
+// AMBIL USER
+async function loadUsers() {
+  const snap = await getDocs(collection(db, "users"));
+  let list = document.getElementById("list");
+
+  snap.forEach((docu) => {
+    let data = docu.data();
+
+    if (data.email !== myEmail) {
+      let div = document.createElement("div");
+      div.className = "user";
+      div.innerText = data.nama;
+
+      div.onclick = () => {
+        let room = createRoom(myEmail, data.email);
+        localStorage.setItem("room", room);
+        localStorage.setItem("target", data.email);
+        location.href = "chat.html";
+      };
+
+      list.appendChild(div);
+    }
+  });
+}
+
+// ROOM ID
+function createRoom(a, b) {
+  return a < b ? a + "_" + b : b + "_" + a;
+}
+</script>
+
+</body>
+</html>
