@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HAYCHAT</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0b141a;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.card{
+width:90%;
+max-width:360px;
+background:#202c33;
+padding:30px;
+border-radius:20px;
+box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+
+.logo{
+text-align:center;
+font-size:50px;
+margin-bottom:10px;
+}
+
+h1{
+color:#25D366;
+text-align:center;
+margin-bottom:5px;
+}
+
+p{
+text-align:center;
+color:#ccc;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+background:#2a3942;
+color:white;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+background:#25D366;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+#status{
+margin-top:15px;
+text-align:center;
+color:#25D366;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<div class="logo">💬</div>
+
+<h1>HAYAPP</h1>
+
+<p>Masuk ke akun Anda</p>
+
+<input id="email" type="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">
+LOGIN
+</button>
+
+<button onclick="register()">
+DAFTAR
+</button>
+
+<div id="status"></div>
+
+</div>
+
+<script>
+
+function login(){
+
+let email=document.getElementById("email").value;
+let pass=document.getElementById("password").value;
+
+if(email==""||pass==""){
+status.innerHTML="Lengkapi semua data!";
+return;
+}
+
+status.innerHTML="✔ Login berhasil (sementara)";
+}
+
+function register(){
+
+status.innerHTML="Halaman daftar akan dibuat pada Bagian 2";
+
+}
+
+</script>
+
+</body>
+  </html>
