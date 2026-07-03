@@ -93,38 +93,13 @@ color:white;
 </div>
 
 <script type="module">
-import { auth, db } from "./firebase.js";
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+let room = localStorage.getItem("room");
 
-import {
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
-
-let userEmail = "";
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    location.href = "index.html";
-  } else {
-    userEmail = user.email;
-    document.getElementById("nama").innerText = user.email;
-    loadChat();
-  }
-});
-
-// KIRIM PESAN
 window.kirim = async function () {
   let pesan = document.getElementById("pesan").value;
   if (!pesan) return;
 
-  await addDoc(collection(db, "chat"), {
+  await addDoc(collection(db, "chatrooms", room, "messages"), {
     text: pesan,
     sender: userEmail,
     time: Date.now()
@@ -133,9 +108,12 @@ window.kirim = async function () {
   document.getElementById("pesan").value = "";
 };
 
-// LOAD CHAT REALTIME
+// LOAD CHAT PRIVATE
 function loadChat() {
-  const q = query(collection(db, "chat"), orderBy("time"));
+  const q = query(
+    collection(db, "chatrooms", room, "messages"),
+    orderBy("time")
+  );
 
   onSnapshot(q, (snapshot) => {
     let chat = document.getElementById("chat");
@@ -159,8 +137,7 @@ function loadChat() {
 
     chat.scrollTop = chat.scrollHeight;
   });
-}
-
+  }
 // LOGOUT
 window.logout = function () {
   signOut(auth);
