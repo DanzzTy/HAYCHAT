@@ -114,35 +114,9 @@ DAFTAR
 </div>
 
 <script>
-
-function login(){
-
-let email=document.getElementById("email").value;
-let password=document.getElementById("password").value;
-
-let simpanEmail=localStorage.getItem("email");
-let simpanPassword=localStorage.getItem("password");
-
-if(email==""||password==""){
-status.innerHTML="Lengkapi semua data!";
-return;
-}
-
-if(email===simpanEmail && password===simpanPassword){
-
-status.innerHTML="Login berhasil...";
-
-setTimeout(()=>{
-location.href="users.html";
-},1000);
-
-}else{
-
-status.innerHTML="Email atau Password salah!";
-
-}
-
-}
+<button onclick="login()">
+LOGIN
+</button>
 
 function register(){
 location.href="register.html";
